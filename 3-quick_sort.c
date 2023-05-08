@@ -1,89 +1,81 @@
 #include "sort.h"
 
 /**
- * quick_sort - is a sorting algorithm
- * @array: Array of the integer list
- * @size: Size of the array
+ * swap - swaps two integers
+ * @first: first integer
+ * @second: second integer
  *
- * Return: void function
+ * Return: void
  */
-
-void quick_sort(int *array, size_t size)
+void swap(int *first, int *second)
 {
-	size_t start = 0;
-	size_t end = size - 1;
+	int tmp;
 
-	if (array != NULL || size > 1)
-		recursive_sort(array, size, start, end);
-
-}
-/**
- * recursive_sort - recursive function for partition
- * @arr: Array of the integer list
- * @size: Size of the array
- * @min: value min
- * @max: value max
- *
- * Return: void function
- */
-void recursive_sort(int arr[], size_t size, int min, int max)
-{
-	int part;
-
-	if (min < max)
-	{
-		part = partition(arr, size, min, max);
-
-		recursive_sort(arr, size, min, part - 1);
-		recursive_sort(arr, size, part + 1, max);
-	}
+	tmp = *first;
+	*first = *second;
+	*second = tmp;
 }
 
-
-
 /**
- * partition - partitions array
- * @arr: Array of the integer list
- * @size: Size of the array
- * @low: low of array
- * @high: high of array
- * Return: void function
+ * partition - partitions an array seperate by pivot
+ * @array: the given array
+ * @low: the lowest value of the array
+ * @high: the highest value of the array
+ * @size: the size of the array
+ *
+ * Return: the pivot position as integer
  */
-
-int partition(int arr[], size_t size, int low, int high)
+int partition(int *array, int low, int high, size_t size)
 {
-	int pivot = arr[high];
-	int i = (low - 1), j;
+	int pivot = high;
+	int i = low - 1, j;
 
-	for (j = low; j <= high - 1; j++)
+	for (j = low; j <= high; j++)
 	{
-		if (arr[j] <= pivot)
+		if (array[j] <= array[pivot])
 		{
 			i++;
-			swap_value(&arr[i], &arr[j]);
 			if (i != j)
-				print_array(arr, size);
+			{
+				swap(&array[i], &array[j]);
+				print_array(array, size);
+			}
 		}
 	}
-	i++;
-	swap_value(&arr[i], &arr[high]);
-	if (i != j)
-		print_array(arr, size);
 	return (i);
 }
 
 /**
- * swap_value - swap two elements of array
- * @a: first element
- * @b: second element
+ * quick_sort_lomuto - sorts recursively an array of integer
+ * @array: the given array of integer
+ * @low: the lowest value of the array
+ * @high: the highest value of the array
+ * @size: the size of the array
  *
- * Return: void function
+ * Return: void
  */
-
-
-void swap_value(int *a, int *b)
+void quick_sort_lomuto(int *array, int low, int high, size_t size)
 {
-	int temp = *a;
-	*a = *b;
-	*b = temp;
+	int prt;
+
+	if (low < high)
+	{
+		prt = partition(array, low, high, size);
+		quick_sort_lomuto(array, low, prt - 1, size);
+		quick_sort_lomuto(array, prt + 1, high, size);
+	}
+}
+
+/**
+ * quick_sort - sorts an array of integers
+ * @array: the given array of integers
+ * @size: the size of the array
+ *
+ * Return: void
+ */
+void quick_sort(int *array, size_t size)
+{
+	if (!array || !size)
+		return;
+	quick_sort_lomuto(array, 0, size - 1, size);
 }
